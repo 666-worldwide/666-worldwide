@@ -276,6 +276,33 @@ section { padding: 4.5rem 0; }
   box-shadow: 0 0 6px var(--ok);
 }
 
+.agent-status-closed {
+  color: var(--sigil-gold);
+}
+
+.agent-status-closed::before {
+  background: var(--sigil-gold);
+  box-shadow: 0 0 6px var(--sigil-gold);
+}
+
+.agent-reveal-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.agent-reveal-btn {
+  align-self: flex-start;
+  padding: 0.55rem 1.3rem;
+}
+
+.agent-reveal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .agent-phone {
   font-family: var(--font-mono);
   color: var(--sigil-gold);
