@@ -31,9 +31,8 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", 'data:', 'blob:'],
         connectSrc: ["'self'"]
       }
@@ -57,7 +56,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/health', healthRoutes);
 
-// Fallback: serve index.html for unmatched non-API GET requests (simple multi-page routing safety net)
+// Single-page app: every non-API, non-upload GET request serves index.html.
+// Client-side router in app.js decides which view to show — the URL never changes.
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
     return next();
