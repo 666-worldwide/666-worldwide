@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — 666 WORLDWIDE</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav container">
+    <a class="brand" href="/index.html"><span class="glyph">&#9760;</span> 666 WORLDWIDE</a>
+    <button class="nav-toggle" aria-label="Toggle navigation">MENU</button>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/mission.html">Mission</a></li>
+      <li><a href="/join.html">Join</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="#" id="logout-link">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section style="padding-top: 3.5rem;">
+    <div class="container">
+      <p class="eyebrow">Member Dashboard</p>
+      <div id="alert" class="alert alert-error"></div>
+      <div id="alert-success" class="alert alert-success"></div>
+
+      <div class="dash-header">
+        <div id="avatar-wrap">
+          <div class="avatar-placeholder">?</div>
+        </div>
+        <div>
+          <h1 id="display-name" style="margin-bottom: 0.3rem;">Loading…</h1>
+          <div class="member-number" id="display-member-number">666-----</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <p class="eyebrow">Profile</p>
+          <div class="stat-line"><span>Email</span><span id="stat-email">—</span></div>
+          <div class="stat-line"><span>Member Number</span><span id="stat-member-number">—</span></div>
+          <div class="stat-line"><span>Registered</span><span id="stat-created">—</span></div>
+        </div>
+
+        <div class="card">
+          <p class="eyebrow">Upload Passport Photo</p>
+          <form id="photo-form">
+            <div class="field">
+              <label for="photo">Image file (max 5MB)</label>
+              <input type="file" id="photo" name="photo" accept="image/*" required />
+            </div>
+            <button type="submit" class="btn btn-block" id="photo-submit">Upload Photo</button>
+          </form>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <p class="eyebrow">Edit Profile</p>
+          <form id="profile-form">
+            <div class="field">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" name="fullName" minlength="2" required />
+            </div>
+            <div class="field">
+              <label for="bio">Biography</label>
+              <textarea id="bio" name="bio" maxlength="2000"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="profile-submit">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span>&copy; <span id="year"></span> 666 WORLDWIDE</span>
+    <span><a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a></span>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  if (!Auth.isAuthenticated()) {
+    window.location.href = '/login.html';
+  }
+
+  const alertBox = document.getElementById('alert');
+  const successBox = document.getElementById('alert-success');
+
+  function showError(message) {
+    alertBox.textContent = message;
+    alertBox.classList.add('visible');
+    successBox.classList.remove('visible');
+  }
+
+  function showSuccess(message) {
+    successBox.textContent = message;
+    successBox.classList.add('visible');
+    alertBox.classList.remove('visible');
+  }
+
+  function renderUser(user) {
+    document.getElementById('display-name').textContent = user.fullName;
+    document.getElementById('display-member-number').textContent = user.memberNumber;
+    document.getElementById('stat-email').textContent = user.email;
+    document.getElementById('stat-member-number').textContent = user.memberNumber;
+    document.getElementById('stat-created').textContent = new Date(user.createdAt).toLocaleDateString(undefined, {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+    document.getElementById('fullName').value = user.fullName;
+    document.getElementById('bio').value = user.bio || '';
+
+    const avatarWrap = document.getElementById('avatar-wrap');
+    if (user.photoFilename) {
+      avatarWrap.innerHTML = `<img class="avatar" src="/uploads/${user.photoFilename}" alt="Passport photo of ${user.fullName}" />`;
+    } else {
+      const initial = user.fullName ? user.fullName.charAt(0).toUpperCase() : '?';
+      avatarWrap.innerHTML = `<div class="avatar-placeholder">${initial}</div>`;
+    }
+  }
+
+  async function loadProfile() {
+    try {
+      const data = await apiRequest('/users/me');
+      renderUser(data.user);
+    } catch (err) {
+      Auth.clearToken();
+      window.location.href = '/login.html';
+    }
+  }
+
+  loadProfile();
+
+  document.getElementById('logout-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    Auth.clearToken();
+    window.location.href = '/login.html';
+  });
+
+  document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('profile-submit');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    try {
+      const fullName = document.getElementById('fullName').value.trim();
+      const bio = document.getElementById('bio').value.trim();
+      const data = await apiRequest('/users/me', { method: 'PUT', body: { fullName, bio } });
+      renderUser(data.user);
+      showSuccess('Profile updated.');
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Save Changes';
+    }
+  });
+
+  document.getElementById('photo-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById('photo');
+    if (!fileInput.files.length) return;
+    const btn = document.getElementById('photo-submit');
+    btn.disabled = true;
+    btn.textContent = 'Uploading…';
+    try {
+      const formData = new FormData();
+      formData.append('photo', fileInput.files[0]);
+      const data = await apiRequest('/users/photo', { method: 'POST', body: formData, isFormData: true });
+      renderUser(data.user);
+      showSuccess('Photo uploaded.');
+      fileInput.value = '';
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Upload Photo';
+    }
+  });
+</script>
+</body>
+</html>

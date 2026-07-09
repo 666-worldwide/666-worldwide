@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>666 WORLDWIDE — The Circle Is Open</title>
+<meta name="description" content="666 WORLDWIDE membership network. Register, receive your member number, and step through the gate." />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<div id="boot-overlay"></div>
+
+<header class="site-header">
+  <nav class="nav container">
+    <a class="brand" href="/index.html"><span class="glyph">&#9760;</span> 666 WORLDWIDE</a>
+    <button class="nav-toggle" aria-label="Toggle navigation">MENU</button>
+    <ul class="nav-links">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/mission.html">Mission</a></li>
+      <li><a href="/join.html">Join</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/login.html">Login</a></li>
+      <li data-auth-slot></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-inner">
+      <p class="eyebrow">Membership Network &middot; Est. Digital Chapter</p>
+      <h1>The circle is open.</h1>
+      <p class="lede">666 WORLDWIDE is a private membership network. Every member is issued a unique
+        identifier, a permanent record, and standing within the circle. Entry is deliberate — this is
+        not a mailing list.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/register.html">Request Membership</a>
+        <a class="btn" href="/mission.html">Read the Mission</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="container">
+      <p class="eyebrow">What Membership Provides</p>
+      <h2>Three things every member holds.</h2>
+      <div class="grid grid-3" style="margin-top: 2rem;">
+        <div class="card">
+          <p class="eyebrow">01 / Identity</p>
+          <h3>A member number</h3>
+          <p>Issued once, permanent, in the format 666-YYYY-XXXXXX. It is your record within the circle.</p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">02 / Access</p>
+          <h3>A private dashboard</h3>
+          <p>Your profile, your photo, your biography — held securely and visible only to you.</p>
+        </div>
+        <div class="card">
+          <p class="eyebrow">03 / Contact</p>
+          <h3>Direct agents</h3>
+          <p>Recruiting agents are available directly. No forms in the dark — a real line to a real contact.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-alt">
+    <div class="container">
+      <p class="eyebrow">Recruiting Now</p>
+      <h2>Agents currently active.</h2>
+      <div id="agent-preview" class="grid grid-3" style="margin-top: 2rem;">
+        <p style="color: var(--bone-dim); font-family: var(--font-mono); font-size: 0.85rem;">Loading agents…</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="text-align:center;">
+      <h2>Ready to be counted?</h2>
+      <p style="max-width: 480px; margin: 0 auto 1.6rem;">Registration takes under a minute. Your member number is generated the moment you join.</p>
+      <a class="btn btn-primary" href="/register.html">Register Now</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <span>&copy; <span id="year"></span> 666 WORLDWIDE</span>
+    <span><a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="/join.html">Join</a></span>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  runBootSequence([
+    '> initializing 666worldwide.terminal',
+    '> resolving region... KE detected',
+    '> establishing secure channel',
+    '> loading member registry',
+    '> access granted'
+  ]);
+
+  fetch('/api/agents')
+    .then((r) => r.json())
+    .then(({ agents }) => {
+      const wrap = document.getElementById('agent-preview');
+      wrap.innerHTML = '';
+      agents.slice(0, 3).forEach((agent) => {
+        const card = document.createElement('div');
+        card.className = 'card agent-card';
+        card.innerHTML = `
+          <span class="agent-status">${agent.status}</span>
+          <h3>${agent.name}</h3>
+          <span class="agent-phone">${agent.phone}</span>
+        `;
+        wrap.appendChild(card);
+      });
+    })
+    .catch(() => {
+      document.getElementById('agent-preview').innerHTML =
+        '<p style="color: var(--bone-dim);">Agent registry temporarily unavailable.</p>';
+    });
+</script>
+</body>
+</html>
