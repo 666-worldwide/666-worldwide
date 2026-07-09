@@ -118,6 +118,38 @@ function initNavToggle() {
    AGENTS — shared loader used by home / join / contact views
    ============================================================ */
 
+function buildAgentCard(agent) {
+  const card = document.createElement('div');
+  card.className = 'card agent-card';
+
+  const isRecruiting = /recruiting/i.test(agent.status);
+  const revealHTML = isRecruiting
+    ? `<span class="agent-status">${agent.status}</span><span class="agent-phone">${agent.phone}</span>`
+    : `<span class="agent-status agent-status-closed">${agent.status}</span>`;
+
+  card.innerHTML = `
+    <h3>${agent.name}</h3>
+    <div class="agent-reveal-wrap">
+      <button type="button" class="btn agent-reveal-btn">Click</button>
+      <div class="agent-reveal-content" hidden>${revealHTML}</div>
+    </div>
+  `;
+
+  const btn = card.querySelector('.agent-reveal-btn');
+  const content = card.querySelector('.agent-reveal-content');
+
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    btn.textContent = 'Loading…';
+    setTimeout(() => {
+      btn.hidden = true;
+      content.hidden = false;
+    }, 2000);
+  });
+
+  return card;
+}
+
 async function loadAgentsInto(elementId, limit) {
   const wrap = document.getElementById(elementId);
   if (!wrap) return;
@@ -126,14 +158,7 @@ async function loadAgentsInto(elementId, limit) {
     const list = limit ? agents.slice(0, limit) : agents;
     wrap.innerHTML = '';
     list.forEach((agent) => {
-      const card = document.createElement('div');
-      card.className = 'card agent-card';
-      card.innerHTML = `
-        <span class="agent-status">${agent.status}</span>
-        <h3>${agent.name}</h3>
-        <span class="agent-phone">${agent.phone}</span>
-      `;
-      wrap.appendChild(card);
+      wrap.appendChild(buildAgentCard(agent));
     });
   } catch (err) {
     wrap.innerHTML = '<p style="color: var(--bone-dim);">Agent registry temporarily unavailable.</p>';
