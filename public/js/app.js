@@ -368,36 +368,6 @@ function initDashboardForms() {
 }
 
 /* ============================================================
-   BOOT SEQUENCE
-   ============================================================ */
-
-function runBootSequence(lines) {
-  const overlay = document.getElementById('boot-overlay');
-  if (!overlay) return;
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    overlay.classList.add('hidden');
-    return;
-  }
-
-  let i = 0;
-  function typeLine() {
-    if (i >= lines.length) {
-      setTimeout(() => overlay.classList.add('hidden'), 350);
-      return;
-    }
-    const div = document.createElement('div');
-    div.className = 'boot-line';
-    div.textContent = lines[i];
-    overlay.appendChild(div);
-    overlay.scrollTop = overlay.scrollHeight;
-    i += 1;
-    setTimeout(typeLine, 90 + Math.random() * 90);
-  }
-  typeLine();
-}
-
-/* ============================================================
    INIT
    ============================================================ */
 
@@ -411,14 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initLogout();
   initDashboardForms();
   updateAuthVisibility();
-
-  runBootSequence([
-    '> initializing 666worldwide.terminal',
-    '> resolving region... KE detected',
-    '> establishing secure channel',
-    '> loading member registry',
-    '> access granted'
-  ]);
 
   // Land on dashboard if already signed in, otherwise home
   navigate(Auth.isAuthenticated() ? 'dashboard' : 'home');
