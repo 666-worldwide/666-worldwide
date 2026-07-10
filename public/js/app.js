@@ -82,7 +82,7 @@ function navigate(viewName) {
 }
 
 function onViewShown(viewName) {
-  if (viewName === 'home') loadAgentsInto('agent-preview', 3);
+  if (viewName === 'home') loadAgentsInto('agent-preview');
   if (viewName === 'join') loadAgentsInto('agent-list');
   if (viewName === 'contact') loadAgentsInto('agent-contact');
   if (viewName === 'dashboard') loadDashboard();
