@@ -297,6 +297,11 @@ section { padding: 4.5rem 0; }
   padding: 0.55rem 1.3rem;
 }
 
+.agent-reveal-btn[hidden],
+.agent-reveal-content[hidden] {
+  display: none;
+}
+
 .agent-reveal-content {
   display: flex;
   flex-direction: column;
