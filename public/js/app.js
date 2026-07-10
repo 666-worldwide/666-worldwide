@@ -144,6 +144,12 @@ function buildAgentCard(agent) {
     setTimeout(() => {
       btn.hidden = true;
       content.hidden = false;
+      setTimeout(() => {
+        content.hidden = true;
+        btn.hidden = false;
+        btn.disabled = false;
+        btn.textContent = 'Click';
+      }, 5000);
     }, 2000);
   });
 
