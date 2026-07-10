@@ -277,12 +277,12 @@ section { padding: 4.5rem 0; }
 }
 
 .agent-status-closed {
-  color: var(--sigil-gold);
+  color: var(--crimson-bright);
 }
 
 .agent-status-closed::before {
-  background: var(--sigil-gold);
-  box-shadow: 0 0 6px var(--sigil-gold);
+  background: var(--crimson-bright);
+  box-shadow: 0 0 6px var(--crimson-bright);
 }
 
 .agent-reveal-wrap {
