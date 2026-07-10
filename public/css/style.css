@@ -206,7 +206,7 @@ p { color: var(--bone-dim); }
   transform: translateY(-50%);
   width: 380px;
   height: 380px;
-  opacity: 0.1;
+  opacity: 0.18;
   pointer-events: none;
   user-select: none;
 }
