@@ -103,9 +103,11 @@ p { color: var(--bone-dim); }
   gap: 0.6rem;
 }
 
-.brand .glyph {
-  color: var(--crimson-bright);
-  font-size: 1.3rem;
+.brand-emblem {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .nav-links {
@@ -196,6 +198,22 @@ p { color: var(--bone-dim); }
 }
 
 .hero-inner { position: relative; max-width: 760px; }
+
+.hero-watermark {
+  position: absolute;
+  top: 50%;
+  right: -60px;
+  transform: translateY(-50%);
+  width: 380px;
+  height: 380px;
+  opacity: 0.1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 860px) {
+  .hero-watermark { display: none; }
+}
 
 .hero .eyebrow { margin-bottom: 1.2rem; }
 
