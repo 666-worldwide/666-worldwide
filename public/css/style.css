@@ -212,7 +212,14 @@ p { color: var(--bone-dim); }
 }
 
 @media (max-width: 860px) {
-  .hero-watermark { display: none; }
+  .hero-watermark {
+    width: 220px;
+    height: 220px;
+    top: 0;
+    right: 50%;
+    transform: translateX(50%);
+    opacity: 0.14;
+  }
 }
 
 .hero .eyebrow { margin-bottom: 1.2rem; }
